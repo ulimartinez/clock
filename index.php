@@ -8,8 +8,8 @@
 
 // }
 if (!isset($_COOKIE['once'])) {
-	//header("Location: index2.php?");
-	//exit();
+	header("Location: index2.php?");
+	exit();
 }
 ?>
 <!DOCTYPE html>
@@ -133,7 +133,7 @@ if (!isset($_COOKIE['once'])) {
 		}
 
 		var str = "";
-		$('.num').on('touchend, click', function(e) {
+		$('.num').on('touchend', function(e) {
 			e.preventDefault();
 			$(e.target).css('background-color', '#dadada');
 			timeoutID = window.setTimeout(function() {

@@ -18,7 +18,7 @@ function timeIn($seconds) {
 }
 
 
-$conn = new mysqli("129.108.32.61", "ctis", "19691963", "clock");
+$conn = new mysqli("129.108.156.112", "ctis", "CTIS19691963", "clock");
 if ($conn -> connect_error) {
 	die("Connection failed: " . $con -> connecterror);
 }

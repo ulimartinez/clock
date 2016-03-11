@@ -8,7 +8,7 @@ function to_arr($array, $row) {
 }
 
 $to_return = array();
-$conn = new mysqli("129.108.32.61", "ctis", "19691963", "clock");
+$conn = new mysqli("129.108.156.112", "ctis", "CTIS19691963", "clock");
 $user = "Person";
 if ($conn -> connect_error) {
 	die("Connection failed: " . $con -> connecterror);
