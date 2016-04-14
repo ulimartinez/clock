@@ -102,21 +102,19 @@ if (isset($_POST['override'])) {
 }
 if (isset($_POST['kickout'])) {
 	//find out id
-	$sql = "SELECT ID FROM employees WHERE Name LIKE \"" . $_POST['person'] . "\"";
-	$result = $conn -> query($sql);
+	$id = $_POST['person'];
+	$latest = "SELECT t1.* FROM logs t1 LEFT OUTER JOIN logs t2  ON (t1.ID = t2.ID AND t1.date < t2.date) WHERE t2.ID IS NULL AND t1.ID = " . $id;
+	$result = $conn -> query($latest);
 	if ($result -> num_rows > 0) {
 		$row = $result -> fetch_assoc();
-		$id = $row['ID'];
-	}
-	$latest = "SELECT t1.* FROM logs t1 LEFT OUTER JOIN logs t2  ON (t1.ID = t2.ID AND t1.date < t2.date) WHERE t2.ID IS NULL AND t1.ID = " . $id;
-	$result2 = $conn -> query($latest);
-	if ($result2 -> num_rows > 0) {
-		$row2 = $result2 -> fetch_assoc();
 		$date = new DateTime();
-		$start = DateTime::createFromFormat('Y-m-d H:i:s', $user_log['date']);
+		$start = DateTime::createFromFormat('Y-m-d H:i:s', $row['date']);
 		$time = $date -> getTimestamp() - $start -> getTimestamp();
 	}
 	$sql2 = "INSERT into logs (ID, checkedIn, time) Values(" . $id . ", 0, " . $time . ")";
-	$conn -> query($sql2);
+	$result = $conn -> query($sql2);
+	$to_return['result'] = $result;
+	$to_return['query'] = $sql2;
+	echo json_encode($to_return);
 }
 ?>

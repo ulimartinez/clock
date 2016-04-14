@@ -72,7 +72,7 @@
 					$getName = $conn -> query($sql2);
 					$row2 = $getName -> fetch_assoc();
 					$name = $row2['Name'];
-					$latest[$i]['ID'] = $name;
+					$latest[$i]['Name'] = $name;
 					
 				}
 				?>
@@ -100,7 +100,7 @@
 								foreach ($latest as $tr)
 								{
 									echo "<tr>
-												<td>" . $tr['ID'] . "</td><td>" . $tr['date'] . "</td><td><a href=\"#\" class=\"kickout\">Force out</a></td>
+												<td>" . $tr['Name'] . "</td><td>" . $tr['date'] . "</td><td><a href=\"#\" class=\"kickout\" data-id=\"" . $tr['ID'] . "\">Force out</a></td>
 										  </tr>";
 								}
 								?>
@@ -138,8 +138,7 @@
 			$('.kickout').click(function (e){
 				e.preventDefault();
 				var row = $(e.target).closest('tr');
-				var cells = $(row).children();
-				var person = $(cells[0]).text();
+				var person = $(this).data('id');
 				console.log(person);
 				$.post('user.php', {'kickout': 'true', 'person': person}, function(){
 					$(row).remove();
