@@ -8,7 +8,7 @@ function to_arr($array, $row) {
 }
 
 $to_return = array();
-$conn = new mysqli("129.108.156.112", "ctis", "CTIS19691963", "clock");
+$conn = new mysqli("localhost", "root", "1969", "clock");
 $user = "Person";
 if ($conn -> connect_error) {
 	die("Connection failed: " . $con -> connecterror);
@@ -115,6 +115,13 @@ if (isset($_POST['kickout'])) {
 	$result = $conn -> query($sql2);
 	$to_return['result'] = $result;
 	$to_return['query'] = $sql2;
+	echo json_encode($to_return);
+}
+if(isset($_POST['timesheet'])){
+	session_start();
+	$_SESSION['user'] = $_POST['id'];
+	$to_return['session'] = 'set';
+	header('Content-Type: application/json');
 	echo json_encode($to_return);
 }
 ?>

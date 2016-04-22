@@ -107,6 +107,12 @@ body {
         border-left: 1px solid #e7e7e7;
     }
 }
+#page-wrapper-full {
+    position: inherit;
+    padding: 0 30px;
+    min-height: 568px;
+    background-color: #fff;
+}
 
 .navbar-top-links {
     margin-right: 0;

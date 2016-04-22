@@ -27,6 +27,18 @@ html, body {
 	border-radius: 10px;
 	height: 69%
 }
+#container-pub {
+	background-color: #f3f3f3;
+	color: #990000;
+	padding: 15px 25px;
+	width: 100%;
+	max-width: 500px;
+	position: relative;
+	left: 26%;
+	border: solid #990000;
+	border-radius: 10px;
+	height: 69%
+}
 .form-control {
 	font-size: 20px;
 }

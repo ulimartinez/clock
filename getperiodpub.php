@@ -36,7 +36,8 @@ if (isset($_POST['start'])){
 	$end = DateTime::createFromFormat('n/j/y G', $_POST['end'] . "/" . $year . " 23");
 	$end = $end->format('Y-m-d H:i:s');
 	$start = $start->format('Y-m-d H:i:s');
-	$sql = "SELECT * FROM logs WHERE (date BETWEEN  '" . $start . "' AND '" . $end ."')";
+	$id = $_POST['id'];
+	$sql = "SELECT * FROM logs WHERE (date BETWEEN  '" . $start . "' AND '" . $end ."') AND ID = ". $id;
 	$response = $conn -> query($sql);
 	$period = array();
 	while ($row = $response->fetch_assoc()){
@@ -62,19 +63,12 @@ if (isset($_POST['start'])){
 	<th>Action</th>
 	<th>Date</th>
 	<th>Time</th>
-	<th>Edit</th>
 	</tr>
 	</thead>
 	<tbody>";
 	foreach ($period as $tr) {
 		echo "<tr data-id=\"" . $tr['ID'] . "\">
 		<td>" . $tr['name'] . "</td><td>" . $tr['checkedIn'] . "</td><td>" . $tr['date'] . "</td><td>" . timeIn($tr['time']) . "</td>";
-		if ($tr['checkedIn'] === "Clocked OUT"){
-			echo "<td class=\"edit\"><a href=\"#\"><span class=\"pull-right\"><i class=\"fa fa-gear\"></i></span></a></td>";
-		}
-		else{
-			echo "<td></td>";
-		}
 		echo "</tr>";
 	}
 	echo "</tbody>
