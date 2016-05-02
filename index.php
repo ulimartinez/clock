@@ -1,12 +1,4 @@
-<?php // $allow = array("172.19.156.9"); //allowed IPs
-
-// if(!in_array($_SERVER['REMOTE_ADDR'], $allow) && !in_array($_SERVER["HTTP_X_FORWARDED_FOR"], $allow)) {
-
-//     header("Location: index2.php?" . var_dump($allow)); //redirect
-
-//     exit();
-
-// }
+<?php
 
 if (!isset($_COOKIE['once'])) {
 	header("Location: index2.php?");
