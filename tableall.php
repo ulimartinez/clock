@@ -42,7 +42,7 @@ $options = get_periods();
 
 //todays transactions
 require("config.php");
-$conn = new mysqli(DB_HOST, DB_USER, DB_DATABASE, DB_PASSWORD);
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 if ($conn -> connect_error) {
 	die("Connection failed: " . $con -> connecterror);
 }
