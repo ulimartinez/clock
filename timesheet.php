@@ -48,7 +48,8 @@ else{
 $options = get_periods();
 
 //todays transactions
-$conn = new mysqli("localhost", "root", "1969", "clock");
+require("config.php");
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 if ($conn -> connect_error) {
 	die("Connection failed: " . $con -> connecterror);
 }
