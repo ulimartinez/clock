@@ -52,7 +52,8 @@
 
 			<div id="page-wrapper">
 				<?php //todays transactions
-				$conn = new mysqli("129.108.156.112", "ctis", "CTIS19691963", "clock");
+				require("config.php");
+				$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 				if ($conn -> connect_error) {
 					die("Connection failed: " . $con -> connecterror);
 				}

@@ -18,7 +18,8 @@ function timeIn($seconds) {
 }
 
 
-$conn = new mysqli("irpsrvgis35.utep.edu", "ctis", "CTIS19691963", "clock");
+require("config.php");
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 if ($conn -> connect_error) {
 	die("Connection failed: " . $con -> connecterror);
 }
