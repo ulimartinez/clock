@@ -125,4 +125,17 @@ if(isset($_POST['timesheet'])){
 	header('Content-Type: application/json');
 	echo json_encode($to_return);
 }
+if(isset($_POST['add'])){//TODO: add user to database if id works
+	$id = $_POST['id'];
+	$sql = "SELECT * FROM employees WHERE ID = " . $id;
+	$result = $conn -> query($sql);
+	if($result->num_rows > 0){
+		$to_return['message'] = "Error, user with id " . $id . " exists";
+	}
+	else{
+		$to_return['message'] = "User with id " . $id . " doesn't exist";	
+	}
+	header('Content-Type: application/json');
+	echo json_encode($to_return);
+}
 ?>

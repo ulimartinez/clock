@@ -71,17 +71,23 @@
 								<div class="row">
 									<div class="form-group">
 										<div class="col-md-10 col-md-offset-1">
-											<label>Name:</label>
-                                            <input id="name" class="form-control">
-                                            <label>Classification:</label>
-                                            <input id="classification" class="form-control">
-                                            <label>ID:</label>
-                                            <input id="id" class="form-control">
-                                            <p class="help-block">If left empty, id will be generated automatically</p>
+											<div class="form-group">
+												<label class="control-label">Name:</label>
+                                            	<input id="name" class="form-control">
+											</div>
+											<div class="form-group">
+												<label class="control-label">Classification:</label>
+                                            	<input id="classification" class="form-control">
+											</div>
+											<div class="form-group">
+												<label class="control-label">ID:</label>
+                                            	<input id="id" class="form-control">
+                                            	<p class="help-block">If left empty, id will be generated automatically</p>
+											</div>
 										</div>
                                             
                                             <div class="col-md-8 col-md-offset-2">
-                                            	<button type="submit" class="vert-offset-top-1 btn btn-success btn-default btn-block">Create Employee</button>
+                                            	<button type="submit" id="submit" class="vert-offset-top-1 btn btn-success btn-default btn-block">Create Employee</button>
                                             </div>
                                             
                                         </div>
@@ -113,6 +119,41 @@
 
 		<!-- Custom Theme JavaScript -->
 		<script src="js/sb-admin-2.js"></script>
+		
+		<!-- create user -->
+		<script>
+		//TODO: Handle when user id already exists and when success
+			$('#submit').click(submit);
+			function submit(){
+				var name = $('#name').val();
+				var classif = $('#classification').val();
+				var id = $('#id').val();
+				if(name.length * classif.length){
+					if(id.length == 0){
+						id = Math.floor(Math.random() * (9999 - 1000)) + 1000;
+					}
+					$.post('user.php', {'add': true, 'name': name, 'class': classif, 'id': id}, function(data){
+						console.log(data);
+					});
+				}
+				else{
+					if(classif.length){
+						$('#name').parent('.form-group').addClass('has-error');
+						$('#name').siblings('label').append(document.createTextNode(" Must not be empty"));						
+					}
+					else if(name.length){
+						$('#classification').parent('.form-group').addClass('has-error');
+						$('#classification').siblings('label').append(document.createTextNode(" Must not be empty"));
+					}
+					else{
+						$('#name').parent('.form-group').addClass('has-error');
+						$('#name').siblings('label').append(document.createTextNode(" Must not be empty"));
+						$('#classification').parent('.form-group').addClass('has-error');
+						$('#classification').siblings('label').append(document.createTextNode(" Must not be empty"));
+					}
+				}
+			}
+		</script>
 
 	</body>
 
