@@ -80,7 +80,7 @@ if (isset($_POST['saved'])) {
 				$to_return['success'] = "Updated";
 			}
 
-		} else {
+} else {
 			$to_return['error'] = "That ID is already taken";
 
 		}
@@ -125,15 +125,23 @@ if(isset($_POST['timesheet'])){
 	header('Content-Type: application/json');
 	echo json_encode($to_return);
 }
-if(isset($_POST['add'])){//TODO: add user to database if id works
+if(isset($_POST['add'])){
 	$id = $_POST['id'];
 	$sql = "SELECT * FROM employees WHERE ID = " . $id;
 	$result = $conn -> query($sql);
 	if($result->num_rows > 0){
-		$to_return['message'] = "Error, user with id " . $id . " exists";
+		$to_return['error'] = "Error, user with id " . $id . " exists";
 	}
 	else{
-		$to_return['message'] = "User with id " . $id . " doesn't exist";	
+		$name = $_POST['name'];
+		$class = $_POST['class'];
+		$sql = "INSERT INTO employees (ID, Class, Name) VALUES(" . $id . ", '" . $class . "', '" . $name . "')";
+		$result = $conn -> query($sql);
+		if($result)
+			$to_return['success'] = "User with id " . $id . " created succesfully.";
+		else {
+			$to_return['error'] = "AN unexpected error ocurred. Please refresh and try again.";
+		}
 	}
 	header('Content-Type: application/json');
 	echo json_encode($to_return);

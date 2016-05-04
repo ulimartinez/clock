@@ -122,9 +122,9 @@
 		
 		<!-- create user -->
 		<script>
-		//TODO: Handle when user id already exists and when success
 			$('#submit').click(submit);
 			function submit(){
+				$('#submit').text("Adding user");
 				var name = $('#name').val();
 				var classif = $('#classification').val();
 				var id = $('#id').val();
@@ -133,6 +133,22 @@
 						id = Math.floor(Math.random() * (9999 - 1000)) + 1000;
 					}
 					$.post('user.php', {'add': true, 'name': name, 'class': classif, 'id': id}, function(data){
+						if(data.hasOwnProperty('error')){
+							$('.panel-footer').remove();
+		                    var footer = $('<div class="panel-footer" />');
+		                    var error = $('<div class="alert alert-danger" role="alert"> />').text(data.error);
+		                    footer.append(error);
+		                    footer.hide().slideDown('fast').appendTo('.panel');
+						}
+						else if(data.hasOwnProperty('success')){
+							$('.panel-footer').remove();
+		                    var footer = $('<div class="panel-footer" />');
+		                    var error = $('<div class="alert alert-success" role="alert"> />').text(data.success);
+		                    footer.append(error);
+		                    footer.hide().slideDown('fast').appendTo('.panel');
+		                    $('input').val("");
+						}
+						$('submit').text('Create Employee');
 						console.log(data);
 					});
 				}
@@ -153,6 +169,9 @@
 					}
 				}
 			}
+			$('input').click(function(){
+				$(this).parent('.form-group').removeClass('has-error');
+			});
 		</script>
 
 	</body>
