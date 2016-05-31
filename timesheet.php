@@ -53,25 +53,23 @@ $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 if ($conn -> connect_error) {
 	die("Connection failed: " . $con -> connecterror);
 }
-$sql = "SELECT * FROM logs WHERE date > DATE_SUB(NOW(), INTERVAL 1 DAY)";
+$sql = "SELECT * FROM logs WHERE id = $id AND date > DATE_SUB(NOW(), INTERVAL 1 DAY)";
 $respoinse = $conn -> query($sql);
 $transactions = array();
 while ($row = $respoinse -> fetch_assoc()) {
 	array_push($transactions, $row);
 }
 for ($i = 0; $i < $respoinse -> num_rows; $i++) { //TODO: make this not O(n^2) can store the id's and names in a table
-	$id = $transactions[$i]['ID'];
-	$sql2 = "SELECT Name FROM employees WHERE ID = " . $id;
-	$getName = $conn -> query($sql2);
-	$row2 = $getName -> fetch_assoc();
-	$name = $row2['Name'];
-	$transactions[$i]['ID'] = $name;
 	if ($transactions[$i]['checkedIn'] === '1') {
 		$transactions[$i]['checkedIn'] = "Clocked IN";
 	} else {
 		$transactions[$i]['checkedIn'] = "Clocked OUT";
 	}
 }
+$sql2 = "SELECT Name FROM employees WHERE ID = " . $id;
+$getName = $conn -> query($sql2);
+$row2 = $getName -> fetch_assoc();
+$name = $row2['Name'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -162,7 +160,7 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) { //TODO: make this not O(n^2) c
 								<?php
 								foreach ($transactions as $tr) {
 									echo "<tr>
-<td>" . $tr['ID'] . "</td><td>" . $tr['checkedIn'] . "</td><td>" . $tr['date'] . "</td><td>" . timeIn($tr['time']) . "</td>";
+<td>" . $name . "</td><td>" . $tr['checkedIn'] . "</td><td>" . $tr['date'] . "</td><td>" . timeIn($tr['time']) . "</td>";
 									if ($tr['checkedIn'] === "Clocked OUT") {
 										echo "<td class=\"edit\"><a href=\"#\"><span class=\"pull-right\"><i class=\"fa fa-gear\"></i></span></a></td>";
 									} else {
