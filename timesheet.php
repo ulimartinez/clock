@@ -56,20 +56,28 @@ if ($conn -> connect_error) {
 $sql = "SELECT * FROM logs WHERE id = $id AND date > DATE_SUB(NOW(), INTERVAL 1 DAY)";
 $respoinse = $conn -> query($sql);
 $transactions = array();
-while ($row = $respoinse -> fetch_assoc()) {
-	array_push($transactions, $row);
-}
-for ($i = 0; $i < $respoinse -> num_rows; $i++) { //TODO: make this not O(n^2) can store the id's and names in a table
-	if ($transactions[$i]['checkedIn'] === '1') {
-		$transactions[$i]['checkedIn'] = "Clocked IN";
-	} else {
-		$transactions[$i]['checkedIn'] = "Clocked OUT";
+if($respoinse->num_rows > 0){
+	while ($row = $respoinse -> fetch_assoc()) {
+		array_push($transactions, $row);
+	}
+	for ($i = 0; $i < $respoinse -> num_rows; $i++) { //TODO: make this not O(n^2) can store the id's and names in a table
+		if ($transactions[$i]['checkedIn'] === '1') {
+			$transactions[$i]['checkedIn'] = "Clocked IN";
+		} else {
+			$transactions[$i]['checkedIn'] = "Clocked OUT";
+		}
 	}
 }
 $sql2 = "SELECT Name FROM employees WHERE ID = " . $id;
 $getName = $conn -> query($sql2);
-$row2 = $getName -> fetch_assoc();
-$name = $row2['Name'];
+if($getName->num_rows){
+	$row2 = $getName -> fetch_assoc();
+	$name = $row2['Name'];
+}
+else{
+	header('Location: timesheetlogin.php?logout=298uf984j');
+	exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

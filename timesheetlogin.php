@@ -37,7 +37,7 @@ else if(isset($_SESSION['user'])){
 					<center>
 						<div class="row">
 							<div class="col-md-3" style="display: inline">
-								<input type="password" size="6" id="digit-one" maxlength="1">
+								<input type="password" size="6" id="digit-one" maxlength="1" autofocus>
 							</div>
 							<div class="col-md-3" style="display: inline">
 								<input type="password" size="6" id="digit-two" maxlength="1">
@@ -96,14 +96,14 @@ else if(isset($_SESSION['user'])){
 
 
 		<script>
-			function timeIn(seconds) {
-				if (seconds < 60) {
-					return seconds + " seconds";
-				} else if (seconds < 60 * 60) {
-					return (seconds / 60).toFixed(2) + " minutes";
-				} else {
-					return Math.floor(seconds / (3600)) + " hours and " + ((seconds / 60) % 60).toFixed(2) + " minutes";
-				}
+		function timeIn(seconds) {
+			if (seconds < 60) {
+				return seconds + " seconds";
+			} else if (seconds < 60 * 60) {
+				return (seconds / 60).toFixed(2) + " minutes";
+			} else {
+				return Math.floor(seconds / (3600)) + " hours and " + ((seconds / 60) % 60).toFixed(2) + " minutes";
+			}
 		}
 
 		var str = "";
@@ -159,31 +159,39 @@ else if(isset($_SESSION['user'])){
 			str = "";
 		});
 		$('input').on('keyup', function(){
-			if($(this).prop('id') == "digit-one"){
-				str += $(this).val();
-				console.log(str);
-				$('#digit-two').focus();
-			}
-			else if($(this).prop('id') == "digit-two"){
-				str += $(this).val();
-				$('#digit-three').focus();
-			}
-			else if($(this).prop('id') == "digit-three"){
-				str += $(this).val();
-				console.log(str);
-				$('#digit-four').focus();
-			}
-			else if($(this).prop('id') == "digit-four"){
-				str += $(this).val();
-				$.post('user.php', {
-				'id' : str,
-				'timesheet' : "true"
-				}, function(data) {
-					if(data.hasOwnProperty('session')){
-						window.location = 'timesheet.php';
-					}
-				});
-			}
+			if (!isNaN($(this).val())){
+		        // Filter non-digits from input value.
+		        if($(this).prop('id') == "digit-one"){
+					str += $(this).val();
+					console.log(str);
+					$('#digit-two').focus();
+				}
+				else if($(this).prop('id') == "digit-two"){
+					str += $(this).val();
+					$('#digit-three').focus();
+				}
+				else if($(this).prop('id') == "digit-three"){
+					str += $(this).val();
+					console.log(str);
+					$('#digit-four').focus();
+				}
+				else if($(this).prop('id') == "digit-four"){
+					str += $(this).val();
+					$.post('user.php', {
+					'id' : str,
+					'timesheet' : "true"
+					}, function(data) {
+						if(data.hasOwnProperty('session')){
+							window.location = 'timesheet.php';
+						}
+					});
+				}
+		    }
+		    else{
+		    	alert("Only numbers allowed");
+		    	$(this).val('');
+		    }
+			
 		});
 
 		</script>
