@@ -1,5 +1,12 @@
 <?php 
 session_start();
+if(isset($_GET['logout'])){
+	$_SESSION = array();
+}
+else if(isset($_SESSION['user'])){
+	header('Location: timesheet.php');
+	exit();
+}
 
 ?>
 <!DOCTYPE html>

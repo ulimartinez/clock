@@ -101,6 +101,9 @@ $name = $row2['Name'];
 
 		<!-- Tables CSS -->
 		<link href="css/dataTables.css" rel="stylesheet">
+		
+		<!-- custom for vert offset CSS -->
+		<link href="css/custom.css" rel="stylesheet">
 
 		<!-- Custom Fonts -->
 		<link href="font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css">
@@ -117,6 +120,11 @@ $name = $row2['Name'];
 	<body>
 
 		<div id="page-wrapper-full">
+			<div class="row vert-offset-top-1">
+				<div class="col-lg-3">
+					<a class="btn btn-danger" href=<?php echo '"timesheetlogin.php?logout='.$id.'"'; ?> role="button" id="back"><span class="glyphicon glyphicon-chevron-left"></span> Back</a>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-lg-12">
 					<h1 class="page-header">Employee Logs</h1>
