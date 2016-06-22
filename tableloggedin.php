@@ -51,32 +51,7 @@
  ?>
 
 			<div id="page-wrapper">
-				<?php //todays transactions
-				require("config.php");
-				$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
-				if ($conn -> connect_error) {
-					die("Connection failed: " . $con -> connecterror);
-				}
-				$sql = "SELECT t1.* FROM logs t1 LEFT OUTER JOIN logs t2  ON (t1.ID = t2.ID AND t1.date < t2.date) WHERE t2.ID IS NULL";
-				$respoinse = $conn -> query($sql);
-				$latest = array();
-				while ($row = $respoinse -> fetch_assoc()) {
-					if ($row['checkedIn'] === "1")
-					{
-						array_push($latest, $row);
-					}
-					
-				}
-				for ($i = 0; $i < count($latest); $i++) {
-					$id = $latest[$i]['ID'];
-					$sql2 = "SELECT Name FROM employees WHERE ID = " . $id;
-					$getName = $conn -> query($sql2);
-					$row2 = $getName -> fetch_assoc();
-					$name = $row2['Name'];
-					$latest[$i]['Name'] = $name;
-					
-				}
-				?>
+				
 				<div class="row">
 					<div class="col-lg-12">
 						<h1 class="page-header">Logged In Users</h1>
@@ -96,15 +71,8 @@
 									<th>Action</th>
 								</tr>
 							</thead>
-							<tbody>
-								<?php
-								foreach ($latest as $tr)
-								{
-									echo "<tr>
-												<td>" . $tr['Name'] . "</td><td>" . $tr['date'] . "</td><td><a href=\"#\" class=\"kickout\" data-id=\"" . $tr['ID'] . "\">Force out</a></td>
-										  </tr>";
-								}
-								?>
+							<tbody id="usersin">
+								<tr><td colspan="3">Loading...</td></tr>
 							</tbody>
 						</table>
 					</div>
@@ -136,16 +104,31 @@
 		<script src="js/dataTables.js"></script>
 
 		<script>
+			var getUsersIn = function(){
+				$.post('tableinsource.php', {'usersin': true}, function(data){
+					$('#usersin').html(data);
+				});
+				//setTimeout(getUsersIn(), );
+			}
+			$(document).ready(function(){
+				getUsersIn();
+				setInterval(function(){
+					$.post('tableinsource.php', {'usersin': true}, function(data){
+						$('#usersin').html(data);
+					});
+					//setTimeout(getUsersIn(), );
+				}, (5000 * 60));//every 5 min
+			});
 			$('.kickout').click(function (e){
 				e.preventDefault();
-				var row = $(e.target).closest('tr');
+				var $row = $(e.target).closest('tr');
 				var person = $(this).data('id');
 				console.log(person);
 				$.post('user.php', {'kickout': 'true', 'person': person}, function(){
-					$(row).remove();
+					$row.remove();
 				})
 				
-			})
+			});
 		</script>
 
 	</body>
