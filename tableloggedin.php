@@ -79,6 +79,7 @@
 
 				</div>
 				<!-- /.row -->
+				<div id="sound"></div>
 			</div>
 			<!-- /#page-wrapper -->
 
@@ -104,6 +105,9 @@
 		<script src="js/dataTables.js"></script>
 
 		<script>
+			function playSound(filename){   
+                document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="sound/' + filename + '.mp3" type="audio/mpeg" /><source src="sound/' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="sound/' + filename +'.mp3" /></audio>';
+            }
 			var getUsersIn = function(){
 				$.post('tableinsource.php', {'usersin': true}, function(data){
 					$('#usersin').html(data);
@@ -111,13 +115,23 @@
 				//setTimeout(getUsersIn(), );
 			}
 			$(document).ready(function(){
+				var usersIn = 0;
 				getUsersIn();
 				setInterval(function(){
 					$.post('tableinsource.php', {'usersin': true}, function(data){
-						$('#usersin').html(data);
+						$('#usersin').html(data.html);
+						if(usersIn < data.total){
+							playSound("in");
+							usersIn = data.total;
+						}
+						else if(usersIn > data.total){
+							playSound("out");
+							usersIn = data.total;
+						}
 					});
 					//setTimeout(getUsersIn(), );
 				}, (5000 * 60));//every 5 min
+				
 			});
 			$('.kickout').click(function (e){
 				e.preventDefault();
