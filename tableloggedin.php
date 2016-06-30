@@ -130,7 +130,7 @@
 						}
 					});
 					//setTimeout(getUsersIn(), );
-				}, (5000 * 60));//every 5 min
+				}, (500 * 60));//every 30 sec
 				
 			});
 			$('.kickout').click(function (e){
