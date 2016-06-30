@@ -30,9 +30,7 @@
 		}
 		$toReturn['html'] = "";
 		foreach ($latest as $tr){
-			$toReturn['html'] = $toReturn['html'] .  "<tr>
-						<td>" . $tr['Name'] . "</td><td>" . $tr['date'] . "</td><td><a href=\"#\" class=\"kickout\" data-id=\"" . $tr['ID'] . "\">Force out</a></td>
-				  </tr>";
+			$toReturn['html'] = $toReturn['html'] .  "<tr><td>" . $tr['Name'] . "</td><td>" . $tr['date'] . "</td><td><a href=\"#\" class=\"kickout\" data-id=\"" . $tr['ID'] . "\">Force out</a></td></tr>";
 		}
 		echo json_encode($toReturn);
 	}
