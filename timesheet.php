@@ -248,7 +248,7 @@ else{
 			});
 			
 			//when you select an option
-			$('#periods option').click(function(e) {
+			$('#periods').change(function(e) {
 				var str = $('#periods :selected').text();
 				//remove spaces
 				str = str.replace(/ /g, '');
