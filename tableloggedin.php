@@ -108,15 +108,12 @@
 			function playSound(filename){   
                 document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="sound/' + filename + '.mp3" type="audio/mpeg" /><source src="sound/' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="sound/' + filename +'.mp3" /></audio>';
             }
-			var getUsersIn = function(){
-				$.post('tableinsource.php', {'usersin': true}, function(data){
-					$('#usersin').html(data);
-				});
-				//setTimeout(getUsersIn(), );
-			}
 			$(document).ready(function(){
 				var usersIn = 0;
-				getUsersIn();
+				$.post('tableinsource.php', {'usersin': true}, function(data){
+					$('#usersin').html(data.html);
+					usersIn = data.total;
+				});
 				setInterval(function(){
 					$.post('tableinsource.php', {'usersin': true}, function(data){
 						$('#usersin').html(data.html);
@@ -133,14 +130,14 @@
 				}, (500 * 60));//every 30 sec
 				
 			});
-			$('.kickout').click(function (e){
+			$('#usersin').delegate('.kickout','click', function (e){
 				e.preventDefault();
-				var $row = $(e.target).closest('tr');
+				var $row = $(this).closest('tr');
 				var person = $(this).data('id');
 				console.log(person);
 				$.post('user.php', {'kickout': 'true', 'person': person}, function(){
 					$row.remove();
-				})
+				});
 				
 			});
 		</script>
