@@ -217,6 +217,9 @@
 			});
 			$('#myModal').on('hidden.bs.modal', function(e){
 				$('#message').remove();
+				$('#name').val("");
+				$('#class').val("");
+				$('#id').val("");
 			});
 $('table').DataTable();
 
