@@ -9,7 +9,7 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<title>SB Admin 2 - Bootstrap Admin Theme</title>
+		<title>Employees logged in:</title>
 
 		<!-- Bootstrap Core CSS -->
 		<link href="css/bootstrap.css" rel="stylesheet">
@@ -51,7 +51,7 @@
  ?>
 
 			<div id="page-wrapper">
-				
+
 				<div class="row">
 					<div class="col-lg-12">
 						<h1 class="page-header">Logged In Users</h1>
@@ -63,7 +63,7 @@
 				<!-- /.row -->
 				<div class="row">
 					<div class="col-md-10 col-md-offset-1">
-						<table class="table table-striped">
+						<table class="table table-striped" id="logged_in">
 							<thead>
 								<tr>
 									<th>Name</th>
@@ -105,21 +105,20 @@
 		<script src="js/dataTables.js"></script>
 
 		<script>
-			function playSound(filename){   
+			function playSound(filename){
                 document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="sound/' + filename + '.mp3" type="audio/mpeg" /><source src="sound/' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="sound/' + filename +'.mp3" /></audio>';
             }
-			var getUsersIn = function(){
-				$.post('tableinsource.php', {'usersin': true}, function(data){
-					$('#usersin').html(data);
-				});
-				//setTimeout(getUsersIn(), );
-			}
 			$(document).ready(function(){
 				var usersIn = 0;
-				getUsersIn();
+				$.post('tableinsource.php', {'usersin': true}, function(data){
+					$('#usersin').html(data.html);
+					usersIn = data.total;
+					$('title').html('Employees in: ' + usersIn);
+				});
 				setInterval(function(){
 					$.post('tableinsource.php', {'usersin': true}, function(data){
 						$('#usersin').html(data.html);
+						$('title').html('Employees in: ' + usersIn);
 						if(usersIn < data.total){
 							playSound("in");
 							usersIn = data.total;
@@ -131,17 +130,17 @@
 					});
 					//setTimeout(getUsersIn(), );
 				}, (500 * 60));//every 30 sec
-				
+
 			});
-			$('.kickout').click(function (e){
+			$('#usersin').delegate('.kickout','click', function (e){
 				e.preventDefault();
-				var $row = $(e.target).closest('tr');
+				var $row = $(this).closest('tr');
 				var person = $(this).data('id');
 				console.log(person);
 				$.post('user.php', {'kickout': 'true', 'person': person}, function(){
 					$row.remove();
-				})
-				
+				});
+
 			});
 		</script>
 

@@ -1,4 +1,5 @@
 <?php
+ini_set('date.timezone', 'America/Denver');
 function to_arr($array, $row) {
 	$timestamp = new DateTime($row['date']);
 	$timestamp = $timestamp -> getTimestamp();
