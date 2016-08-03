@@ -70,19 +70,32 @@ if (isset($_POST['delete'])) {
 	$conn -> query($sql);
 }
 if (isset($_POST['saved'])) {
-	$sql = "SELECT * FROM employees WHERE ID = " . $_POST['id'];
-	$result = $conn -> query($sql);
-	if ($result -> num_rows > 0) {
-		$row = $result -> fetch_assoc();
-		if ($row['Name'] === $_POST['name']) {
-			$update = "UPDATE employees SET ID = " . $_POST['id'] . ", Name = \"" . $_POST['name'] . "\", Class = \"" . $_POST['class'] . "\" WHERE ID =" . $_POST['id'];
-			if ($conn -> query($update)) {
-				$to_return['success'] = "Updated";
+	if($_POST['old_id'] === $_POST['new_id']){
+		//id is the same, update just the name and classif
+		$update = "UPDATE employees SET Name = \"" . $_POST['name'] . "\", Class = \"" . $_POST['class'] . "\" WHERE ID =" . $_POST['old_id'];
+		if ($conn -> query($update)) {
+			$to_return['success'] = "Updated";
+		}
+	}
+	else{
+		//check that the new id is valid
+		if(is_numeric($_POST['new_id']) AND $_POST['new_id'] < 10000 AND $_POST['new_id'] >= 1000){
+			//check that the new id doesn't conflict with another one
+			$sql = "SELECT * FROM employees WHERE ID = " . $_POST['new_id'];
+			$result = $conn -> query($sql);
+			if($result->num_rows > 0){
+				$to_return['error'] = "That ID is already taken";
 			}
-
-} else {
-			$to_return['error'] = "That ID is already taken";
-
+			else{
+				//set new id, name, and classification
+				$update = "UPDATE employees SET ID = " . $_POST['new_id'] . ", Name = \"" . $_POST['name'] . "\", Class = \"" . $_POST['class'] . "\" WHERE ID =" . $_POST['old_id'];
+				if ($conn -> query($update)) {
+					$to_return['success'] = "Updated";
+				}
+			}
+		}
+		else{
+			$to_return['error'] = "Please enter a valid 4 digit number";
 		}
 	}
 	header('Content-Type: application/json');
