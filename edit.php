@@ -220,6 +220,8 @@
 				$('#name').val("");
 				$('#class').val("");
 				$('#id').val("");
+				$('#save').unbind('click');
+				$('#delete').unbind('click');
 			});
 $('table').DataTable();
 
