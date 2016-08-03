@@ -188,8 +188,8 @@
 					}
 				});
 				$('#save').click(function() {
-					name = $('#name').val();
-					classif = $('#class').val();
+					name = $('#name').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");;
+					classif = $('#class').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");;
 					var new_id = $('#id').val();
 					$.post('user.php', {
 						'saved' : true,
