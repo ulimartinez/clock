@@ -118,7 +118,7 @@
 				setInterval(function(){
 					$.post('tableinsource.php', {'usersin': true}, function(data){
 						$('#usersin').html(data.html);
-						$('title').html('Employees in: ' + usersIn);
+						$('title').html('Employees in: ' + data.total);
 						if(usersIn < data.total){
 							playSound("in");
 							usersIn = data.total;
