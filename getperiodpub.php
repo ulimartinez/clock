@@ -26,6 +26,7 @@ if ($conn -> connect_error) {
 
 
 if (isset($_POST['start'])){
+	$total = 0;
 	$start2 = $_POST['start'];
 	$start2 = explode('/', $start2);
 	$year = date('y');
@@ -44,17 +45,18 @@ if (isset($_POST['start'])){
 	while ($row = $response->fetch_assoc()){
 		array_push($period, $row);
 	}
+	$id = $period[0]['ID'];
+	$sql2 = "SELECT Name FROM employees WHERE ID = " . $id;
+	$getName = $conn -> query($sql2);
+	$row2 = $getName -> fetch_assoc();
+	$name = $row2['Name'];
 	for ($i = 0; $i < count($period); $i++) {
-		$id = $period[$i]['ID'];
-		$sql2 = "SELECT Name FROM employees WHERE ID = " . $id;
-		$getName = $conn -> query($sql2);
-		$row2 = $getName -> fetch_assoc();
-		$name = $row2['Name'];
 		$period[$i]['name'] = $name;
 		if ($period[$i]['checkedIn'] === '1') {
 			$period[$i]['checkedIn'] = "Clocked IN";
 		} else {
 			$period[$i]['checkedIn'] = "Clocked OUT";
+			$total += $period[$i]['time'];
 		}
 	}
 	echo "<table class=\"table table-striped\" id=\"periodTable\">
@@ -72,6 +74,7 @@ if (isset($_POST['start'])){
 		<td>" . $tr['name'] . "</td><td>" . $tr['checkedIn'] . "</td><td>" . $tr['date'] . "</td><td>" . timeIn($tr['time']) . "</td>";
 		echo "</tr>";
 	}
+	echo "<tfoot data-seconds=\"" . $total . "\"><td>Total:</td><td></td><td></td><td>" . timeIn($total) . "</td></tfoot>";
 	echo "</tbody>
 	</table>";
 }

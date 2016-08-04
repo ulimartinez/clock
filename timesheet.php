@@ -56,6 +56,7 @@ if ($conn -> connect_error) {
 $sql = "SELECT * FROM logs WHERE id = $id AND date > DATE_SUB(NOW(), INTERVAL 1 DAY)";
 $respoinse = $conn -> query($sql);
 $transactions = array();
+$total = 0;
 if($respoinse->num_rows > 0){
 	while ($row = $respoinse -> fetch_assoc()) {
 		array_push($transactions, $row);
@@ -65,6 +66,7 @@ if($respoinse->num_rows > 0){
 			$transactions[$i]['checkedIn'] = "Clocked IN";
 		} else {
 			$transactions[$i]['checkedIn'] = "Clocked OUT";
+			$total += $transactions[$i]['time'];
 		}
 	}
 }
@@ -184,6 +186,7 @@ else{
 									}
 									echo "</tr>";
 								}
+								echo "<tfoot data-seconds=\"" . $total . "\"><td>Total:</td><td></td><td></td><td>" . timeIn($total) . "</td></tfoot>";
 								?>
 							</tbody>
 						</table>

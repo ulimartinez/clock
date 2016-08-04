@@ -133,9 +133,16 @@ if (isset($_POST['kickout'])) {
 	echo json_encode($to_return);
 }
 if(isset($_POST['timesheet'])){
-	session_start();
-	$_SESSION['user'] = $_POST['id'];
-	$to_return['session'] = 'set';
+	$sql = "SELECT * FROM employees WHERE ID = " . $_POST['id'];
+	$result = $conn -> query($sql);
+	if($result->num_rows <= 0){
+		$to_return['error'] = "Invalid Login";
+	}
+	else{
+		session_start();
+		$_SESSION['user'] = $_POST['id'];
+		$to_return['session'] = 'set';
+	}
 	header('Content-Type: application/json');
 	echo json_encode($to_return);
 }
