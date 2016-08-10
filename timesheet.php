@@ -14,23 +14,23 @@ function timeIn($seconds) {
 	}
 }
 
-function get_periods() {
+function get_periods() {//gets 4 time periods, the half of month we are in today, and three previous ones
 	$drop_down = array();
 	$now = new DateTime();
 	$now = $now -> format('j-n-y');
 	$now = explode('-', $now);
 	$curr = "";
-	if ($now[1] >= 2) {
-		if ($now[0] > 15) {
+	if ($now[1] >= 2) {//feb and on
+		if ($now[0] > 15) {//today is in second half of month
 			$drop_down = [($now[1] - 1) . '/1 - ' . ($now[1] - 1) . '/15', ($now[1] - 1) . "/15 - " . ($now[1] - 1) . '/' . cal_days_in_month(CAL_GREGORIAN, $now[1], $now[2]), ($now[1]) . "/1 - " . $now[1] . '/15', $now[1] . "/15 - " . $now[1] . "/" . $now[0]];
-		} else {
+		} else {//today is in first half of month
 			$drop_down = [($now[1] - 2) . "/15 - ". ($now[1] - 2) . "/" . cal_days_in_month(CAL_GREGORIAN, $now[1] - 2, $now[2]),($now[1] - 1) . "/1 - " . ($now[1] - 1) . "/15",($now[1] - 1) . "/15 - " . ($now[1] - 1) . "/" . cal_days_in_month(CAL_GREGORIAN, $now[1] - 1, $now[2]),($now[1]) . "/1 - " . ($now[1]) . "/" . ($now[0])];
 		}
 	}
-	else if ($now[1] == 1){
-		if ($now[0] > 15) {
+	else if ($now[1] == 1){//we are in jan, previous periods are in last year
+		if ($now[0] > 15) {//second half
 			$drop_down = [(12) . '/1 - ' . (12) . '/15', (12) . "/15 - " . (12) . '/' . cal_days_in_month(CAL_GREGORIAN, $now[1], $now[2]), ($now[1]) . "/1 - " . $now[1] . '/15', $now[1] . "/15 - " . $now[1] . "/" . $now[0]];
-		} else {
+		} else {//first half
 			$drop_down = [(11) . "/15 - ". (11) . "/" . cal_days_in_month(CAL_GREGORIAN, 11, $now[2]),(12) . "/1 - " . (12) . "/15",(12) . "/15 - " . (12) . "/" . cal_days_in_month(CAL_GREGORIAN, 12, $now[2]),($now[1]) . "/1 - " . ($now[1]) . "/" . ($now[0])];
 		}
 	}
@@ -196,6 +196,11 @@ else{
 
 			</div>
 				<!-- /.row -->
+			<div class="row vert-offset-bottom-12" style="padding-bottom: 200px;">
+				<div class="col-lg-3 col-lg-offset-9">
+					<a class="btn btn-success" href="#" role="button" id="print">Generate Timesheet <span class="glyphicon glyphicon-chevron-right"></span></a>
+				</div>
+			</div>
 		</div>
 		<!-- /#wrapper -->
 
@@ -270,6 +275,25 @@ else{
 				});
 
 			});
+			$('#print').click(function(e){
+				redirectPost('timesheetprint.php', {id: <?php echo $id; ?>, totalTime: <?php echo $total;?>});
+			});
+			function redirectPost(location, args){
+		        var form = $('<form></form>');
+		        form.attr("method", "post");
+		        form.attr("action", location);
+		
+		        $.each( args, function( key, value ) {
+		            var field = $('<input></input>');
+		
+		            field.attr("type", "hidden");
+		            field.attr("name", key);
+		            field.attr("value", value);
+		
+		            form.append(field);
+		        });
+		        $(form).appendTo('body').submit();
+		    }
 		</script>
 
 	</body>
