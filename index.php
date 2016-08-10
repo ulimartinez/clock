@@ -1,12 +1,5 @@
-<?php // $allow = array("172.19.156.9"); //allowed IPs
+<?php
 
-// if(!in_array($_SERVER['REMOTE_ADDR'], $allow) && !in_array($_SERVER["HTTP_X_FORWARDED_FOR"], $allow)) {
-
-//     header("Location: index2.php?" . var_dump($allow)); //redirect
-
-//     exit();
-
-// }
 if (!isset($_COOKIE['once'])) {
 	header("Location: index2.php?");
 	exit();
@@ -19,7 +12,7 @@ if (!isset($_COOKIE['once'])) {
 
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable = no">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 		<title>Welcome to CTIS</title>
 
@@ -156,14 +149,13 @@ if (!isset($_COOKIE['once'])) {
 			$('#myModalLabel').empty();
 			$('.modal-body').empty();
 			$('#myModalLabel').html("<center><img height=\"30px\" src=\"image/loading.gif\"></center>");
-			$('.modal-body').html("<center><img src=\"image/loading_christmas.gif\"></center>");
+			$('.modal-body').html("<center><img src=\"image/loading.gif\"></center>");
 			$('#myModal').modal('show');
 			console.log('call the update thing with ' + str);
 			$.post('user.php', {
 			'id' : str,
 			'clock' : "true"
 			}, function(data) {
-				console.log(data);
 				var welcome = data.welcome;
 				var status = data.status;
 

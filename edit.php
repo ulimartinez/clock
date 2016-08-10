@@ -52,7 +52,8 @@
 
 			<div id="page-wrapper">
 				<?php //todays transactions
-				$conn = new mysqli("129.108.156.112", "ctis", "CTIS19691963", "clock");
+				require("config.php");
+				$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 				if ($conn -> connect_error) {
 					die("Connection failed: " . $con -> connecterror);
 				}
@@ -126,7 +127,7 @@
 								<?php
 								foreach ($users as $tr) {
 									echo "<tr>
-									<td class=\"name\">" . $tr['Name'] . "</td><td>" . $tr['Class'] . "</td><td>" . $tr['ID'] . "</td><td class=\"edit\"><a href=\"#\"><span class=\"pull-right\"><i class=\"fa fa-gear\"></i></span></a></td>
+									<td class=\"name\">" . $tr['Name'] . "</td><td class=\"classif\">" . $tr['Class'] . "</td><td class=\"id\">" . $tr['ID'] . "</td><td class=\"edit\"><a href=\"#\"><span class=\"pull-right\"><i class=\"fa fa-gear\"></i></span></a></td>
 									</tr>";
 								}
 								?>
@@ -163,39 +164,39 @@
 		<script>
 		$('.edit').click(function(e) {
 				//alert($(e.target).closest('tr').find('td.name').text());
-				var name = $(e.target).closest('tr').find('td.name').text();
-				var classif = $(e.target).closest('tr').find('td.name').next('td').text();
-				var id = $(e.target).closest('tr').find('td.name').next('td').next('td').text();
+				var name = $(this).closest('tr').find('td.name').text();
+				var classif = $(this).closest('tr').find('td.classif').text();
+				var old_id = $(this).closest('tr').find('td.id').text();
 				$('#name').val(name);
 				$('#class').val(classif);
-				$('#id').val(id);
+				$('#id').val(old_id);
 				$('#myModal').modal('show');
-				console.log($(e.target).closest('tr').children());
 				$('#delete').click(function() {
 					var procede = confirm("Are you sure?");
 					if (procede) {
 						$.post('user.php', {
-							'delete' : $('#id').val()
+							'delete' : old_id
 						}, function() {
 							$('#name').val('deleted');
 							$('#id').val('deleted');
 							$('#class').val('deleted');
 							$(e.target).closest('tr').find('td.name').text('deleted');
-							$(e.target).closest('tr').find('td.name').next('td').text('deleted');
-							$(e.target).closest('tr').find('td.name').next('td').next('td').text('deleted');
+							$(e.target).closest('tr').find('td.classif').text('deleted');
+							$(e.target).closest('tr').find('td.id').text('deleted');
 							$('#myModal').modal('hide');
 						})
 					}
 				});
 				$('#save').click(function() {
-					name = $('#name').val();
-					classif = $('#class').val();
-					id = $('#id').val();
+					name = $('#name').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");;
+					classif = $('#class').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");;
+					var new_id = $('#id').val();
 					$.post('user.php', {
-						'saved' : 'true',
+						'saved' : true,
 						'name' : name,
 						'class' : classif,
-						'id' : id
+						'new_id' : new_id,
+						'old_id': old_id
 					}, function(data){
 						if('error' in data)
 						{
@@ -207,12 +208,20 @@
 							$('#message').remove();
 							$('.modal-footer').prepend("<a data-dismiss=\"modal\" class=\"btn btn-success\" id=\"message\">" + data['success'] + "</a>");
 							$(e.target).closest('tr').find('td.name').text(name);
-							$(e.target).closest('tr').find('td.name').next('td').text(classif);
-							$(e.target).closest('tr').find('td.name').next('td').next('td').text(id);
+							$(e.target).closest('tr').find('td.classif').text(classif);
+							$(e.target).closest('tr').find('td.id').text(new_id);
 						}
 						
 					});
 				});
+			});
+			$('#myModal').on('hidden.bs.modal', function(e){
+				$('#message').remove();
+				$('#name').val("");
+				$('#class').val("");
+				$('#id').val("");
+				$('#save').unbind('click');
+				$('#delete').unbind('click');
 			});
 $('table').DataTable();
 

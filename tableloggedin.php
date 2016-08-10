@@ -9,7 +9,7 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<title>SB Admin 2 - Bootstrap Admin Theme</title>
+		<title>Employees logged in:</title>
 
 		<!-- Bootstrap Core CSS -->
 		<link href="css/bootstrap.css" rel="stylesheet">
@@ -51,31 +51,7 @@
  ?>
 
 			<div id="page-wrapper">
-				<?php //todays transactions
-				$conn = new mysqli("129.108.156.112", "ctis", "CTIS19691963", "clock");
-				if ($conn -> connect_error) {
-					die("Connection failed: " . $con -> connecterror);
-				}
-				$sql = "SELECT t1.* FROM logs t1 LEFT OUTER JOIN logs t2  ON (t1.ID = t2.ID AND t1.date < t2.date) WHERE t2.ID IS NULL";
-				$respoinse = $conn -> query($sql);
-				$latest = array();
-				while ($row = $respoinse -> fetch_assoc()) {
-					if ($row['checkedIn'] === "1")
-					{
-						array_push($latest, $row);
-					}
-					
-				}
-				for ($i = 0; $i < count($latest); $i++) {
-					$id = $latest[$i]['ID'];
-					$sql2 = "SELECT Name FROM employees WHERE ID = " . $id;
-					$getName = $conn -> query($sql2);
-					$row2 = $getName -> fetch_assoc();
-					$name = $row2['Name'];
-					$latest[$i]['Name'] = $name;
-					
-				}
-				?>
+
 				<div class="row">
 					<div class="col-lg-12">
 						<h1 class="page-header">Logged In Users</h1>
@@ -87,7 +63,7 @@
 				<!-- /.row -->
 				<div class="row">
 					<div class="col-md-10 col-md-offset-1">
-						<table class="table table-striped">
+						<table class="table table-striped" id="logged_in">
 							<thead>
 								<tr>
 									<th>Name</th>
@@ -95,21 +71,15 @@
 									<th>Action</th>
 								</tr>
 							</thead>
-							<tbody>
-								<?php
-								foreach ($latest as $tr)
-								{
-									echo "<tr>
-												<td>" . $tr['Name'] . "</td><td>" . $tr['date'] . "</td><td><a href=\"#\" class=\"kickout\" data-id=\"" . $tr['ID'] . "\">Force out</a></td>
-										  </tr>";
-								}
-								?>
+							<tbody id="usersin">
+								<tr><td colspan="3">Loading...</td></tr>
 							</tbody>
 						</table>
 					</div>
 
 				</div>
 				<!-- /.row -->
+				<div id="sound"></div>
 			</div>
 			<!-- /#page-wrapper -->
 
@@ -135,16 +105,43 @@
 		<script src="js/dataTables.js"></script>
 
 		<script>
-			$('.kickout').click(function (e){
+			function playSound(filename){
+                document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="sound/' + filename + '.mp3" type="audio/mpeg" /><source src="sound/' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="sound/' + filename +'.mp3" /></audio>';
+            }
+			$(document).ready(function(){
+				var usersIn = 0;
+				$.post('tableinsource.php', {'usersin': true}, function(data){
+					$('#usersin').html(data.html);
+					usersIn = data.total;
+					$('title').html('Employees in: ' + usersIn);
+				});
+				setInterval(function(){
+					$.post('tableinsource.php', {'usersin': true}, function(data){
+						$('#usersin').html(data.html);
+						$('title').html('Employees in: ' + data.total);
+						if(usersIn < data.total){
+							playSound("in");
+							usersIn = data.total;
+						}
+						else if(usersIn > data.total){
+							playSound("out");
+							usersIn = data.total;
+						}
+					});
+					//setTimeout(getUsersIn(), );
+				}, (500 * 60));//every 30 sec
+
+			});
+			$('#usersin').delegate('.kickout','click', function (e){
 				e.preventDefault();
-				var row = $(e.target).closest('tr');
+				var $row = $(this).closest('tr');
 				var person = $(this).data('id');
 				console.log(person);
 				$.post('user.php', {'kickout': 'true', 'person': person}, function(){
-					$(row).remove();
-				})
-				
-			})
+					$row.remove();
+				});
+
+			});
 		</script>
 
 	</body>

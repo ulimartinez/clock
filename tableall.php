@@ -41,7 +41,8 @@ function get_periods() {
 $options = get_periods();
 
 //todays transactions
-$conn = new mysqli("129.108.156.112", "ctis", "CTIS19691963", "clock");
+require("config.php");
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 if ($conn -> connect_error) {
 	die("Connection failed: " . $con -> connecterror);
 }
@@ -51,7 +52,7 @@ $transactions = array();
 while ($row = $respoinse -> fetch_assoc()) {
 	array_push($transactions, $row);
 }
-for ($i = 0; $i < $respoinse -> num_rows; $i++) {
+for ($i = 0; $i < $respoinse -> num_rows; $i++) { //TODO: make this not O(n^2) can store the id's and names in a table
 	$id = $transactions[$i]['ID'];
 	$sql2 = "SELECT Name FROM employees WHERE ID = " . $id;
 	$getName = $conn -> query($sql2);
@@ -76,7 +77,7 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<title>SB Admin 2 - Bootstrap Admin Theme</title>
+		<title>Employee Logs</title>
 
 		<!-- Bootstrap Core CSS -->
 		<link href="css/bootstrap.css" rel="stylesheet">
@@ -169,7 +170,7 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 							</div>
 
 							<div class="col-md-8">
-								<select class="form-control" id="periods">
+								<select class="form-control" id="periods" autocomplete="off">
 									<option selected style="display: none">Last 24 hours</option>
 									<?php
 									foreach ($options as $period) {
@@ -237,6 +238,7 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 		<script src="js/dataTables.js"></script>
 
 		<script>
+			//create a csv from the table to be able to download it
 			function table2csv(tableElm) {
 				var csv = '';
 				var headers = [];
@@ -266,18 +268,19 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 				return csv;
 
 			}
-
+			//where is this used?
 			function strip_tags(html) {
 				var tmp = document.createElement("div");
 				tmp.innerHTML = html;
 				return tmp.textContent || tmp.innerText;
 			}
-
-
+			
+			//what is this? 
 			Number.prototype.padLeft = function(base, chr) {
 				var len = (String(base || 10).length - String(this).length) + 1;
 				return len > 0 ? new Array(len).join(chr || '0') + this : this;
 			}
+			//function to get a text representation of the duration in seconds
 			function timeIn(seconds) {
 				if (seconds < 60) {
 					return seconds + " seconds";
@@ -290,18 +293,17 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 
 
 			$(document).ready(function() {
+				//create the datatable
 				var table = $('#periodTable').DataTable({
 					paging : false,
 					scrollY : 400
 				});
-				table.on('search.dt', function() {
-				unmodified = false;
-				console.log("clicked eror");
 			});
-			});
-
+			
+			//when you select an option
 			$('#periods option').click(function(e) {
 				var str = $('#periods :selected').text();
+				//remove spaces
 				str = str.replace(/ /g, '');
 				var dates = str.split("-");
 				$.post('getperiod.php', {
@@ -310,40 +312,6 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 				}, function(data) {
 					$('#table-area').empty();
 					$('#table-area').html(data);
-					$('.edit').click(function(e) {
-						//alert($(e.target).closest('tr').find('td.name').text());
-						var row = $(e.target).closest('tr').children();
-						var time = $(row[3]).text();
-						var minutes = time.match(/(\d+) (?:minutes|minutes)/);
-						var hours = time.match(/(\d+) (?:hours|hours)/)
-						if (minutes != null) {
-							$('#mins').val(minutes[1]);
-						}
-						if (hours != null) {
-							$('#hours').val(hours[1]);
-						}
-						$('#myModal').modal('show');
-						$('#save').click(function() {
-							var $prev = $(e.target).closest('tr').prev();
-							var cells = $prev.children();
-							var timestamp = $(cells[2]).text();
-							var validTimestamp = timestamp.split(" ");
-							var startdate = new Date(validTimestamp[0] + "T" + validTimestamp[1]);
-							var enddate = new Date()
-							var seconds = startdate.getTime() / 1000;
-							var old = $(row[2]).text();
-							var added = ($('#mins').val() * 60) + ($('#hours').val() * 60 * 60);
-							var newTime = seconds + added;
-							$.post('user.php', {
-								'override' : 'true',
-								'old' : old,
-								'new' : newTime,
-								'seconds' : added
-							});
-						});
-						console.log(row[2]);
-
-					});
 					$('#periodTable').DataTable({
 						paging : false,
 						scrollY : 400
@@ -351,6 +319,7 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 				});
 
 			});
+			
 			$('#export').bind('click', function(event) {
 				event.preventDefault();
 				var file = table2csv('#periodTable');
@@ -369,7 +338,8 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 				});
 			});
 			var unmodified = true;
-			$('.edit').click(function(e) {
+			$('#table-area').delegate('.edit', 'click', function(e) {
+				console.log($('#save'));
 				//alert($(e.target).closest('tr').find('td.name').text());
 				var row = $(e.target).closest('tr').children();
 				var time = $(row[3]).text();
@@ -382,8 +352,8 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 					$('#hours').val(hours[1]);
 				}
 				$('#myModal').modal('show');
-				$('#save').click(function() {
-					if (unmodified) {
+				$('#save').bind('click', function() {
+					if (true) {
 						var $prev = $(e.target).closest('tr').prev();
 						var cells = $prev.children();
 						var timestamp = $(cells[2]).text();
@@ -409,6 +379,9 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 								$('.modal-footer').prepend("<a data-dismiss=\"modal\" class=\"btn btn-success\" id=\"message\">" + data['success'] + "</a>");
 								$(row[2]).text(dformat);
 								$(row[3]).text(timeIn(added));
+							} else{
+								$('#message').remove();
+								$('.modal-footer').prepend("<a data-dismiss=\"modal\" class=\"btn btn-success\" id=\"message\">Something went wrong</a>");
 							}
 
 						});
@@ -425,12 +398,9 @@ for ($i = 0; $i < $respoinse -> num_rows; $i++) {
 				$('#mins').val(0);
 				$('#hours').val(0);
 				$('#message').remove();
+				$('#save').unbind('click');
+				console.log("removed bind");
 			});
-			$(document).find('input[type=search]').click(function() {
-				unmodified = false;
-				console.log("clicked eror");
-			});
-			
 		</script>
 
 	</body>
