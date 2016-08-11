@@ -198,7 +198,7 @@ else{
 				<!-- /.row -->
 			<div class="row vert-offset-bottom-12" style="padding-bottom: 200px;">
 				<div class="col-lg-3 col-lg-offset-9">
-					<a class="btn btn-success" href="#" role="button" id="print">Generate Timesheet <span class="glyphicon glyphicon-chevron-right"></span></a>
+					<a style="visibility: hidden;" class="btn btn-success" href="#" role="button" id="print">Generate Timesheet <span class="glyphicon glyphicon-chevron-right"></span></a>
 				</div>
 			</div>
 		</div>
@@ -257,6 +257,7 @@ else{
 			
 			//when you select an option
 			$('#periods').change(function(e) {
+				$('#print').attr('style', null);
 				var str = $('#periods :selected').text();
 				//remove spaces
 				str = str.replace(/ /g, '');
@@ -276,7 +277,7 @@ else{
 
 			});
 			$('#print').click(function(e){
-				redirectPost('timesheetprint.php', {id: <?php echo $id; ?>, totalTime: <?php echo $total;?>});
+				redirectPost('timesheetprint.php', {id: <?php echo $id; ?>, totalTime: <?php echo $total;?>, period: $('#periods :selected').text()});
 			});
 			function redirectPost(location, args){
 		        var form = $('<form></form>');
