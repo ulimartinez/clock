@@ -277,7 +277,7 @@ else{
 
 			});
 			$('#print').click(function(e){
-				redirectPost('timesheetprint.php', {id: <?php echo $id; ?>, totalTime: <?php echo $total;?>, period: $('#periods :selected').text()});
+				redirectPost('timesheetprint.php', {id: <?php echo $id; ?>, totalTime: $('tfoot').data('seconds'), period: $('#periods :selected').text()});
 			});
 			function redirectPost(location, args){
 		        var form = $('<form></form>');
