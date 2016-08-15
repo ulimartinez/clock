@@ -36,7 +36,6 @@ function numWeeks($period){
 	return array('weeks'=>max($weekdays), 'days'=>array_sum($weekdays));
 }
 function generateWeeks($numWeeks, $numDays, $time, $maxTime, $start, $end){
-	// echo $numWeeks . "<br/>";
 	//given the number of weeks to generate, distribute time in the days of the weeks
 	$total = $time;
 	$weeks = array();
@@ -79,7 +78,6 @@ $days = generateWeeks(numWeeks($period)['weeks'], numWeeks($period)['days'], $ti
 $timeperiod = ['date','date','date','date'];
 
 $department = 'Department' . $time;
-// echo json_encode(generateWeeks(numWeeks($period)['weeks'], numWeeks($period)['days'], $time, 28, $period['start'], $period['end']));
 
 // Instanciation of inherited class
 $pdf = new PDF();
@@ -126,7 +124,7 @@ $pdf->Cell(7,10,'',0);
 $pdf->Cell(9,10,array_sum($days[0]),0);
 
 
-// **** Week 2 ****
+/**** Week 2 ****
 $pdf->Cell(40,10,'',0);
 for ($i=0; $i < 5; $i++) {
 	if(!isset($days[1])){
@@ -179,7 +177,12 @@ $pdf->Cell(0,15,'',0,1);
 $pdf->Cell(80,10,'',0);
 $pdf->Cell(9,10,array_sum($days[2]),0);
 $pdf->Cell(93,10,'',0);
+<<<<<<< HEAD
 $pdf->Cell(9,10,array_sum($days[3]),0,1);
 
+=======
+$pdf->Cell(9,10,array_sum($days[1]),0,1);
+*/
+>>>>>>> upstream/master
 $pdf->Output();
 ?>
