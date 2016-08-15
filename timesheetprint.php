@@ -36,7 +36,7 @@ function numWeeks($period){
 	return array('weeks'=>max($weekdays), 'days'=>array_sum($weekdays));
 }
 function generateWeeks($numWeeks, $numDays, $time, $maxTime, $start, $end){
-	echo $numWeeks . "<br/>";
+	// echo $numWeeks . "<br/>";
 	//given the number of weeks to generate, distribute time in the days of the weeks
 	$total = $time;
 	$weeks = array();
@@ -46,7 +46,7 @@ function generateWeeks($numWeeks, $numDays, $time, $maxTime, $start, $end){
 		$tmp = array(0,0,0,0,0);
 		for(; $count <= $end['day'] AND date('N', DateTime::createFromFormat('n/j', $start['month'] . "/" . ($count))->getTimestamp()) < 6; $count++){
 			$day = date('N', DateTime::createFromFormat('n/j', $start['month'] . "/" . ($count))->getTimestamp());
-			$tmp[$day-1] = $val;
+			$tmp[$day-1] = floor($val/3600);
 		}
 		$weeks[] = $tmp;
 		$count += 2;
@@ -73,13 +73,13 @@ $PI = 'Dr. Abdallah';
 $division = 'Division';
 // $date = $_POST['date'];
 $date = date("Y/m/d");
-// $days = $_POST['days'];
-$days = [['6','5','6','5','6'],['6','5','6','5','6'],['6','5','6','5','6'],['6','5','6','5','6']];
+$days = generateWeeks(numWeeks($period)['weeks'], numWeeks($period)['days'], $time, 28, $period['start'], $period['end']);
+// $days = [['6','5','6','5','6'],['6','5','6','5','6'],['6','5','6','5','6'],['6','5','6','5','6']];
 // $timeperiod = $_POST['timeperiod'];
 $timeperiod = ['date','date','date','date'];
 
 $department = 'Department' . $time;
-echo json_encode(generateWeeks(numWeeks($period)['weeks'], numWeeks($period)['days'], $time, 28, $period['start'], $period['end']));
+// echo json_encode(generateWeeks(numWeeks($period)['weeks'], numWeeks($period)['days'], $time, 28, $period['start'], $period['end']));
 
 // Instanciation of inherited class
 $pdf = new PDF();
@@ -117,6 +117,9 @@ $pdf->Cell(60,10,$timeperiod[1],0,1);
 $pdf->Cell(0,5,'',0,1);
 $pdf->Cell(30,10,'',0);
 for ($i=0; $i < 5; $i++) {
+	if(!isset($days[0])){
+			$days[0] = ['','','','',''];
+	}
   $pdf->Cell(9,10,$days[0][$i],0);
 }
 $pdf->Cell(7,10,'',0);
@@ -126,6 +129,9 @@ $pdf->Cell(9,10,array_sum($days[0]),0);
 // **** Week 2 ****
 $pdf->Cell(40,10,'',0);
 for ($i=0; $i < 5; $i++) {
+	if(!isset($days[1])){
+			$days[1] = ['','','','',''];
+	}
   $pdf->Cell(9,10,$days[1][$i],0);
 }
 $pdf->Cell(9,10,'',0);
@@ -149,25 +155,31 @@ $pdf->Cell(60,10,$timeperiod[3],0,1);
 $pdf->Cell(0,5,'',0,1);
 $pdf->Cell(30,10,'',0);
 for ($i=0; $i < 5; $i++) {
+	if(!isset($days[2])){
+			$days[2] = ['','','','',''];
+	}
   $pdf->Cell(9,10,$days[2][$i],0);
 }
 $pdf->Cell(7,10,'',0);
-$pdf->Cell(9,10,array_sum($days[0]),0);
+$pdf->Cell(9,10,array_sum($days[2]),0);
 
 // **** Week 4 ****
 $pdf->Cell(40,10,'',0);
 for ($i=0; $i < 5; $i++) {
+	if(!isset($days[3])){
+			$days[3] = ['','','','',''];
+	}
   $pdf->Cell(9,10,$days[3][$i],0);
 }
 $pdf->Cell(9,10,'',0);
-$pdf->Cell(9,10,array_sum($days[1]),0);
+$pdf->Cell(9,10,array_sum($days[3]),0);
 
 // **** Weekly Totals Week 3 & 4 ****
 $pdf->Cell(0,15,'',0,1);
 $pdf->Cell(80,10,'',0);
-$pdf->Cell(9,10,array_sum($days[0]),0);
+$pdf->Cell(9,10,array_sum($days[2]),0);
 $pdf->Cell(93,10,'',0);
-$pdf->Cell(9,10,array_sum($days[1]),0,1);
+$pdf->Cell(9,10,array_sum($days[3]),0,1);
 
 $pdf->Output();
 ?>

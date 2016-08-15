@@ -111,7 +111,7 @@ else{
 
 		<!-- Tables CSS -->
 		<link href="css/dataTables.css" rel="stylesheet">
-		
+
 		<!-- custom for vert offset CSS -->
 		<link href="css/custom.css" rel="stylesheet">
 
@@ -151,7 +151,7 @@ else{
 							<label class="col-sm-2 control-label">Period:</label>
 						</div>
 
-						<div class="col-md-8">	
+						<div class="col-md-8">
 							<select class="form-control" id="periods" autocomplete="off">
 								<option selected style="display: none">Last 24 hours</option>
 								<?php
@@ -229,8 +229,8 @@ else{
 				tmp.innerHTML = html;
 				return tmp.textContent || tmp.innerText;
 			}
-			
-			//what is this? 
+
+			//what is this?
 			Number.prototype.padLeft = function(base, chr) {
 				var len = (String(base || 10).length - String(this).length) + 1;
 				return len > 0 ? new Array(len).join(chr || '0') + this : this;
@@ -254,7 +254,7 @@ else{
 					scrollY : 400
 				});
 			});
-			
+
 			//when you select an option
 			$('#periods').change(function(e) {
 				$('#print').attr('style', null);
@@ -277,20 +277,20 @@ else{
 
 			});
 			$('#print').click(function(e){
-				redirectPost('timesheetprint.php', {id: <?php echo $id; ?>, totalTime: <?php echo $total;?>, period: $('#periods :selected').text()});
+				redirectPost('timesheetprint.php', {id: <?php echo $id; ?>, totalTime: $('tfoot').data('seconds'), period: $('#periods :selected').text()});
 			});
 			function redirectPost(location, args){
 		        var form = $('<form></form>');
 		        form.attr("method", "post");
 		        form.attr("action", location);
-		
+
 		        $.each( args, function( key, value ) {
 		            var field = $('<input></input>');
-		
+
 		            field.attr("type", "hidden");
 		            field.attr("name", key);
 		            field.attr("value", value);
-		
+
 		            form.append(field);
 		        });
 		        $(form).appendTo('body').submit();
