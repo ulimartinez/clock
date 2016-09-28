@@ -40,7 +40,7 @@ if (isset($_POST['clock'])) {
 				$to_return['status'] = "<p id=\"status\">OUT</p>";
 				$to_return['today'] = $total_time;
 				$date = new DateTime();
-				$start = DateTime::createFromFormat('Y-m-d H:i:s', $user_log['date']);
+				$start = new DateTime($user_log['date']);
 				$time = $date -> getTimestamp() - $start -> getTimestamp();
 				$logout = "INSERT into logs (ID, checkedIn, time) Values(" . $id . ", 0, " . $time . ")";
 				$conn -> query($logout);
