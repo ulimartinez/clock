@@ -1,10 +1,3 @@
-<?php
-
-if (!isset($_COOKIE['once'])) {
-	header("Location: index2.php?");
-	exit();
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,7 +7,7 @@ if (!isset($_COOKIE['once'])) {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-		<title>Welcome to CTIS</title>
+		<title>Martech</title>
 
 		<!-- Bootstrap Core CSS -->
 		<link href="css/bootstrap.css" rel="stylesheet">
@@ -44,7 +37,7 @@ if (!isset($_COOKIE['once'])) {
 					<div class="modal-content">
 						<div class="modal-header">
 
-							<h4 class="modal-title" id="myModalLabel">Welcome!</h4>
+							<h4 class="modal-title" id="myModalLabel">Bienvenido</h4>
 						</div>
 						<div class="modal-body">
 							...
@@ -126,7 +119,7 @@ if (!isset($_COOKIE['once'])) {
 		}
 
 		var str = "";
-		$('.num').on('touchend', function(e) {
+		$('.num').on('touchend, click', function(e) {
 			e.preventDefault();
 			$(e.target).css('background-color', '#dadada');
 			timeoutID = window.setTimeout(function() {
@@ -172,8 +165,8 @@ if (!isset($_COOKIE['once'])) {
 				$('#myModal').modal('hide');
 				}, 6000);
 			});
-			
-			
+
+
 
 			//alert('Th1s dude logged in');
 			$('.clear').trigger('click');
